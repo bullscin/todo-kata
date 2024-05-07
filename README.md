@@ -1,1 +1,1 @@
-https://bullscin.github.io/todo-kata/
+https://todokata-amber.vercel.app/

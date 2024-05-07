@@ -1,4 +1,4 @@
-.filters {
+.tasks-filter {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -6,12 +6,12 @@
   left: 0;
 }
 
-.filters li {
+.tasks-filter li {
   display: inline;
   cursor: default;
 }
 
-.filters li button {
+.tasks-filter li button {
   display: inline-block;
   color: inherit;
   margin: 3px;
@@ -21,20 +21,14 @@
   border-radius: 3px;
 }
 
-.filters li button:not(.selected) {
+.tasks-filter li button:not(.selected) {
   cursor: pointer;
 }
 
-.filters li:hover button {
+.tasks-filter li:hover button {
   border-color: rgba(175, 47, 47, 0.1);
 }
 
-.filters li button.selected {
+.tasks-filter li button.selected {
   border-color: rgba(175, 47, 47, 0.2);
-}
-
-@media (max-width: 430px) {
-  .filters {
-    bottom: 10px;
-  }
 }

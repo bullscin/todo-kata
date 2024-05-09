@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+// import TaskTimer from '../Task-timer/TaskTimer';
 
 import './new-task-form.css';
 
@@ -19,6 +20,8 @@ class NewTaskForm extends Component {
   // Обработчик нажатия клавиши
   handleKeyPress(event) {
     if (event.key === 'Enter') {
+      // Предотвращаем стандартное поведение отправки формы
+      event.preventDefault();
       // Деструктурирование состояния
       const { label } = this.state;
       // Удаляем пробелы в начале и в конце строки
@@ -49,6 +52,7 @@ class NewTaskForm extends Component {
       <header className="header">
         <h1>todos</h1>
         {/* Поле ввода для добавления новой задачи */}
+
         <input
           className="new-todo"
           placeholder="What needs to be done?"
@@ -56,6 +60,8 @@ class NewTaskForm extends Component {
           onChange={this.onChangeInput}
           onKeyDown={this.handleKeyPress} // Обработка нажатия клавиши
         />
+
+        {/* <TaskTimer className="new-todo-form__timer" /> */}
       </header>
     );
   }

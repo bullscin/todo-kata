@@ -72,8 +72,7 @@
 
 .todo-list li label .created {
   font-size: 13px;
-  /* color: gray; */
-  color: gold;
+  color: gray;
 }
 
 .todo-list li label .description {

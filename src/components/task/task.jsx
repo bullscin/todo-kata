@@ -1,67 +1,57 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { formatDistanceToNow } from 'date-fns';
+import TaskTimer from '../Task-timer/TaskTimer'; // Подключаем компонент TaskTimer
 import './task.css';
 
-// Default props для Task компонента
-const defaultProps = {
-  task: {
-    id: 0,
-    completed: false,
-    description: '',
-    created: Date.now(),
-    editing: false,
-  },
-  onTaskCompletionToggle: () => {},
-  onDeleted: () => {},
-  onEdit: () => {},
-};
-
-// Компонент для отображения отдельной задачи
 export default class Task extends Component {
   constructor(props) {
     super(props);
+
+    // Привязываем обработчики событий
     this.handleCheckboxChange = this.handleCheckboxChange.bind(this);
     this.handleEditClick = this.handleEditClick.bind(this);
-    this.handleKeyDown = this.handleKeyDown.bind(this);
+    this.handleDeleteClick = this.handleDeleteClick.bind(this);
     this.handleEditSave = this.handleEditSave.bind(this);
+    this.handleKeyDown = this.handleKeyDown.bind(this);
   }
 
-  // Обработчик переключения состояния задачи (выполнена/не выполнена)
   handleCheckboxChange() {
     const { onTaskCompletionToggle, task } = this.props;
     const completed = !task.completed;
     onTaskCompletionToggle(task.id, completed);
   }
 
-  // Обработчик нажатия на кнопку редактирования
   handleEditClick() {
     const { onEdit, task } = this.props;
     onEdit(task.id, true);
   }
 
-  // Обработчик нажатия клавиши в поле редактирования
+  handleEditSave(event) {
+    const { task, onEdit } = this.props;
+    const { value } = event.target;
+    onEdit(task.id, false, value.trim());
+  }
+
   handleKeyDown(event) {
     if (event.key === 'Enter') {
-      const editedDescription = event.target.value.trim();
-      this.handleEditSave(editedDescription);
+      this.handleEditSave(event);
     }
   }
 
-  // Обработчик сохранения редактирования задачи
-  handleEditSave(editedDescription) {
-    const { task, onEdit } = this.props;
-    onEdit(task.id, false, editedDescription);
+  handleDeleteClick() {
+    const { onDeleted, task } = this.props;
+    onDeleted(task.id);
   }
 
   render() {
-    const { task, onDeleted } = this.props;
+    const { task, startTimer, stopTimer, currentTime } = this.props;
+
     const timeDistance = formatDistanceToNow(task.created, {
       addSuffix: true,
       includeSeconds: true,
     });
 
-    // Отображение задачи в соответствии с ее состоянием
     let className = '';
     if (task.completed) {
       className = 'completed';
@@ -72,7 +62,6 @@ export default class Task extends Component {
     return (
       <li className={className}>
         <div className="view">
-          {/* Отметка выполнения задачи */}
           <input
             id={`checkbox-${task.id}`}
             className="toggle"
@@ -80,11 +69,11 @@ export default class Task extends Component {
             checked={task.completed}
             onChange={this.handleCheckboxChange}
           />
-          {/* Отображение информации о задаче */}
+
           <label htmlFor={`checkbox-${task.id}`}>
             <span className="description">{task.description}</span>
             <span className="created">создана {timeDistance}</span>
-            {/* Кнопки для редактирования и удаления задачи */}
+
             <button
               id={`edit-checkbox-${task.id}`}
               onClick={this.handleEditClick}
@@ -93,10 +82,9 @@ export default class Task extends Component {
             >
               {' '}
             </button>
-
             <button
               id={`destroy-checkbox-${task.id}`}
-              onClick={onDeleted}
+              onClick={this.handleDeleteClick}
               type="button"
               className="icon icon-destroy"
             >
@@ -104,25 +92,28 @@ export default class Task extends Component {
             </button>
           </label>
         </div>
-        {/* Поле для редактирования описания задачи */}
         {task.editing ? (
           <input
             type="text"
             className="edit"
             defaultValue={task.description}
-            onBlur={this.handleEditSave} // Вызов метода сохранения при потере фокуса
-            onKeyDown={this.handleKeyDown} // Обработка нажатия клавиши Enter
+            onBlur={this.handleEditSave}
+            onKeyDown={this.handleKeyDown}
           />
         ) : null}
+
+        <TaskTimer
+          taskId={task.id}
+          key={`timer-${task.id}`}
+          startTimer={startTimer}
+          stopTimer={stopTimer}
+          currentTimeId={currentTime[task.id] || 0}
+        />
       </li>
     );
   }
 }
 
-// Устанавливаем значения по умолчанию для компонента Task
-Task.defaultProps = defaultProps;
-
-// Определение типов ожидаемых свойств для Task
 Task.propTypes = {
   task: PropTypes.shape({
     id: PropTypes.number,
@@ -134,4 +125,20 @@ Task.propTypes = {
   onTaskCompletionToggle: PropTypes.func,
   onEdit: PropTypes.func,
   onDeleted: PropTypes.func,
+  stopTimer: PropTypes.func.isRequired,
+  startTimer: PropTypes.func.isRequired,
+  currentTime: PropTypes.objectOf(PropTypes.number).isRequired,
+};
+
+Task.defaultProps = {
+  task: {
+    id: 0,
+    completed: false,
+    description: '',
+    created: Date.now(),
+    editing: false,
+  },
+  onTaskCompletionToggle: () => {},
+  onDeleted: () => {},
+  onEdit: () => {},
 };

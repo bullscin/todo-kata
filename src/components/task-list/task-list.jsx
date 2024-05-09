@@ -1,14 +1,16 @@
+/* eslint-disable no-console */
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import Task from '../task/task';
-
 import './task-list.css';
 
 // Компонент для отображения списка задач
 export default function TaskList({
   tasks,
   filter,
+  startTimer,
+  stopTimer,
+  currentTime,
   onTaskCompletionToggle,
   onDeleted,
   onEdit,
@@ -29,6 +31,9 @@ export default function TaskList({
         <Task
           key={task.id}
           task={task}
+          startTimer={startTimer} // Передача startTimer в Task
+          stopTimer={stopTimer} // Передача stopTimer в Task
+          currentTime={currentTime} // Передача currentTime в Task
           onTaskCompletionToggle={onTaskCompletionToggle}
           onDeleted={() => onDeleted(task.id)}
           onEdit={onEdit}
@@ -48,7 +53,11 @@ TaskList.propTypes = {
     }),
   ).isRequired,
   filter: PropTypes.oneOf(['All', 'Active', 'Completed']).isRequired,
+
   onTaskCompletionToggle: PropTypes.func.isRequired,
   onDeleted: PropTypes.func.isRequired,
   onEdit: PropTypes.func.isRequired,
+  stopTimer: PropTypes.func.isRequired,
+  startTimer: PropTypes.func.isRequired,
+  currentTime: PropTypes.objectOf(PropTypes.number).isRequired,
 };

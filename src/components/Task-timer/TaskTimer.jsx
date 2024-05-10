@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './TaskTimer.css'; // Подключение стилей для компонента TaskTimer
+import './TaskTimer.css';
 
 class TaskTimer extends Component {
   constructor(props) {

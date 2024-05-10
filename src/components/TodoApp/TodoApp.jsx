@@ -8,13 +8,14 @@ import '../style/common.css';
 export default class TodoApp extends Component {
   constructor(props) {
     super(props);
+    // Инициализация состояния компонента
     this.state = {
-      tasks: [],
-      filter: 'All',
-      taskTimers: {},
+      tasks: [], // Массив задач
+      filter: 'All', // Фильтр для отображения задач
+      taskTimers: {}, // Таймеры для каждой задачи
     };
-    this.maxId = 0;
-    // Привязываем методы класса к текущему экземпляру
+    this.maxId = 0; // Максимальный id задачи
+    // Привязка методов класса к текущему экземпляру
     this.handleTaskCompletionToggle = this.handleTaskCompletionToggle.bind(this);
     this.setEditing = this.setEditing.bind(this);
     this.setFilter = this.setFilter.bind(this);
@@ -36,7 +37,7 @@ export default class TodoApp extends Component {
   setEditing(id, editing, newDescription = null) {
     this.setState(({ tasks }) => ({
       tasks: tasks.map((task) => {
-        // Обновляем описание задачи при необходимости
+        // Обновление описания задачи при необходимости
         if (task.id === id) {
           return {
             ...task,
@@ -65,11 +66,10 @@ export default class TodoApp extends Component {
   addTask(text) {
     const newTask = this.createTask(text);
     this.maxId += 1;
-    // Создаем новую задачу
+    // Добавление новой задачи к списку задач
     this.setState(({ tasks, taskTimers }) => ({
-      // Добавляем новую задачу к списку задач
       tasks: [...tasks, newTask],
-      // Создаем запись в taskTimers для новой задачи
+      // Создание записи в taskTimers для новой задачи
       taskTimers: { ...taskTimers, [newTask.id]: 0 },
     }));
   }
@@ -92,17 +92,17 @@ export default class TodoApp extends Component {
     };
   }
 
+  // Метод для запуска таймера для задачи
   startTimer(id) {
     this.setState(
       (prevState) => {
         const { taskTimers: prevTaskTimers } = prevState;
         const newTaskTimers = { ...prevTaskTimers };
 
-        // Инициализируем таймер для новой задачи, если его нет
+        // Инициализация таймера для новой задачи, если его нет
         if (!(id in newTaskTimers)) {
-          newTaskTimers[id] = 0; // Инициализируем значение таймера
-
-          // Обновляем состояние taskTimers
+          newTaskTimers[id] = 0; // Инициализация значения таймера
+          // Обновление состояния taskTimers
           return { taskTimers: newTaskTimers };
         }
 
@@ -111,17 +111,17 @@ export default class TodoApp extends Component {
       },
       () => {
         // Функция обратного вызова будет вызвана после обновления состояния
-        // Здесь вы можете запустить таймер
+        // Здесь можно запустить таймер
         const timerId = setInterval(() => {
           this.setState((prevState) => ({
             taskTimers: {
               ...prevState.taskTimers,
-              [id]: prevState.taskTimers[id] + 1, // Увеличиваем значение таймера на 1
+              [id]: prevState.taskTimers[id] + 1, // Увеличение значения таймера на 1
             },
           }));
         }, 1000);
 
-        // Сохраняем id таймера в состоянии для возможности его остановки
+        // Сохранение id таймера в состоянии для возможности его остановки
         this.setState((prevState) => ({
           taskTimers: {
             ...prevState.taskTimers,
@@ -132,9 +132,10 @@ export default class TodoApp extends Component {
     );
   }
 
+  // Метод для остановки таймера для задачи
   stopTimer(id) {
     const { taskTimers } = this.state;
-    clearInterval(taskTimers[`timer_${id}`]); // Останавливаем таймер
+    clearInterval(taskTimers[`timer_${id}`]); // Остановка таймера
     const newTaskTimers = { ...taskTimers };
 
     this.setState({ taskTimers: newTaskTimers });
@@ -146,11 +147,14 @@ export default class TodoApp extends Component {
 
     return (
       <section className="todoapp">
+        {/* Форма для добавления новой задачи */}
         <NewTaskForm onTaskAdded={this.addTask} />
+
         <section className="main">
+          {/* Список задач */}
           <TaskList
             tasks={tasks}
-            currentTime={taskTimers} // Передача currentTime в TaskList
+            currentTime={taskTimers}
             filter={filter}
             startTimer={this.startTimer}
             stopTimer={this.stopTimer}
@@ -159,6 +163,7 @@ export default class TodoApp extends Component {
             onEdit={this.setEditing}
           />
 
+          {/* Футер с информацией о задачах и фильтром */}
           <Footer
             count={incompleteTasksCount}
             filter={filter}

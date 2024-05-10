@@ -1,63 +1,62 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import './TaskTimer.css';
+import './TaskTimer.css'; // Подключение стилей для компонента TaskTimer
 
 class TaskTimer extends Component {
   constructor(props) {
     super(props);
+    // Инициализация состояния компонента
     this.state = {
-      isRunning: false,
+      isRunning: false, // Флаг, указывающий на состояние таймера
     };
-    this.timerInterval = null;
+    // Привязка метода к текущему экземпляру
     this.toggleTimer = this.toggleTimer.bind(this);
   }
 
-  componentWillUnmount() {
-    clearInterval(this.timerInterval);
-  }
-
+  // Метод для переключения состояния таймера
   toggleTimer() {
-    const { startTimer, stopTimer, taskId } = this.props;
-    const { isRunning } = this.state;
+    const { startTimer, stopTimer, taskId, toggleRunningTask, isRunning } = this.props;
 
+    // Переключение состояния таймера для задачи
+    toggleRunningTask(taskId);
+
+    // Запуск или остановка таймера в зависимости от текущего состояния
     if (!isRunning) {
-      startTimer(taskId); // Запуск таймера для конкретной задачи
-      this.timerInterval = setInterval(() => {
-        this.setState({
-          isRunning: true,
-        });
-      }, 1000);
+      startTimer(taskId);
     } else {
-      stopTimer(taskId); // Остановка таймера для конкретной задачи
-      clearInterval(this.timerInterval);
-
-      this.setState({
-        isRunning: false,
-      });
+      stopTimer(taskId);
     }
+
+    // Обновление состояния isRunning
+    this.setState((prevState) => ({
+      isRunning: !prevState.isRunning,
+    }));
   }
 
   render() {
-    const { isRunning } = this.state;
-    const { currentTimeId } = this.props;
+    const { currentTimeId, isRunning } = this.props;
 
     return (
-      <form className="new-todo-form">
+      <div className="new-todo-form">
+        {/* Кнопка для начала или остановки таймера */}
         <button className="new-todo" type="button" onClick={this.toggleTimer}>
           {isRunning ? 'Остановить' : 'Начать'}
         </button>
+        {/* Отображение текущего времени таймера */}
         <div className="new-todo-form__timer">{currentTimeId}</div>
-      </form>
+      </div>
     );
   }
 }
 
+// Определение типов ожидаемых свойств для компонента TaskTimer
 TaskTimer.propTypes = {
-  startTimer: PropTypes.func.isRequired,
-  stopTimer: PropTypes.func.isRequired,
-  taskId: PropTypes.number.isRequired,
-
-  currentTimeId: PropTypes.number.isRequired,
+  startTimer: PropTypes.func.isRequired, // Функция для запуска таймера
+  stopTimer: PropTypes.func.isRequired, // Функция для остановки таймера
+  taskId: PropTypes.number.isRequired, // ID задачи, для которой отображается таймер
+  currentTimeId: PropTypes.number.isRequired, // Текущее время таймера
+  isRunning: PropTypes.bool.isRequired, // Флаг, указывающий на состояние таймера (запущен или остановлен)
+  toggleRunningTask: PropTypes.func.isRequired, // Функция для переключения состояния таймера
 };
 
 export default TaskTimer;

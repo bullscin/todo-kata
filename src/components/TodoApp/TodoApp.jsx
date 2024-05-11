@@ -22,6 +22,7 @@ export default class TodoApp extends Component {
     this.deleteTask = this.deleteTask.bind(this);
     this.addTask = this.addTask.bind(this);
     this.clearCompletedTasks = this.clearCompletedTasks.bind(this);
+    this.createTask = this.createTask.bind(this);
     this.startTimer = this.startTimer.bind(this);
     this.stopTimer = this.stopTimer.bind(this);
   }
@@ -154,13 +155,13 @@ export default class TodoApp extends Component {
           {/* Список задач */}
           <TaskList
             tasks={tasks}
-            currentTime={taskTimers}
             filter={filter}
-            startTimer={this.startTimer}
-            stopTimer={this.stopTimer}
             onTaskCompletionToggle={this.handleTaskCompletionToggle}
             onDeleted={this.deleteTask}
             onEdit={this.setEditing}
+            currentTime={taskTimers}
+            startTimer={this.startTimer}
+            stopTimer={this.stopTimer}
           />
 
           {/* Футер с информацией о задачах и фильтром */}

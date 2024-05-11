@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { formatDistanceToNow } from 'date-fns';
+import TaskTimer from '../Task-timer/TaskTimer'; // Импортируем TaskTimer
 import './task.css';
 
 export default class Task extends Component {
@@ -49,7 +50,7 @@ export default class Task extends Component {
   }
 
   render() {
-    const { task } = this.props;
+    const { task, currentTime, startTimer, stopTimer } = this.props;
 
     // Определение временной дистанции от создания задачи
     const timeDistance = formatDistanceToNow(task.created, {
@@ -113,6 +114,14 @@ export default class Task extends Component {
             onKeyDown={this.handleKeyDown}
           />
         ) : null}
+
+        {/* Отображение таймера для задачи */}
+        <TaskTimer
+          taskId={task.id}
+          currentTimeId={currentTime[task.id] || 0}
+          startTimer={startTimer}
+          stopTimer={stopTimer}
+        />
       </li>
     );
   }
@@ -130,6 +139,9 @@ Task.propTypes = {
   onTaskCompletionToggle: PropTypes.func,
   onEdit: PropTypes.func,
   onDeleted: PropTypes.func,
+  currentTime: PropTypes.objectOf(PropTypes.number).isRequired,
+  startTimer: PropTypes.func.isRequired,
+  stopTimer: PropTypes.func.isRequired,
 };
 
 // Значения по умолчанию для свойств компонента Task

@@ -1,28 +1,22 @@
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
+import TasksFilter from "../tasks-filter/tasks-filter";
+import "../footer/footer.css";
 
-import TasksFilter from '../tasks-filter/tasks-filter';
-import '../footer/footer.css';
-
-// Компонент футера для отображения информации о задачах и фильтрации
-export default function Footer({
-  count, // Количество оставшихся невыполненных задач
-  filter, // Текущий фильтр
-  setFilter, // Метод для изменения фильтра
-  clearCompletedTasks, // Метод для удаления завершенных задач
-}) {
+const Footer = ({ count, filter, setFilter, clearCompletedTasks }) => {
   return (
-    <footer className='footer'>
+    <footer className="footer">
       {/* Отображение количества оставшихся невыполненных задач */}
-      <span className='todo-count'>{count} items left</span>
+      <span className="todo-count">{count} items left</span>
       {/* Компонент для выбора фильтра */}
       <TasksFilter filter={filter} setFilter={setFilter} />
       {/* Кнопка для удаления завершенных задач */}
-      <button className='clear-completed' onClick={clearCompletedTasks}>
+      <button className="clear-completed" onClick={clearCompletedTasks}>
         Clear completed
       </button>
     </footer>
   );
-}
+};
 
 // Определение типов ожидаемых свойств для Footer
 Footer.propTypes = {
@@ -31,3 +25,5 @@ Footer.propTypes = {
   setFilter: PropTypes.func.isRequired, // Метод для изменения фильтра
   clearCompletedTasks: PropTypes.func.isRequired, // Метод для удаления завершенных задач
 };
+
+export default Footer;

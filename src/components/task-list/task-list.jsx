@@ -1,8 +1,7 @@
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
+import Task from "../task/task";
 
-import Task from '../task/task';
-
-import '../task-list/task-list.css';
+import "../task-list/task-list.css";
 
 // Компонент для отображения списка задач
 export default function TaskList({
@@ -14,15 +13,15 @@ export default function TaskList({
 }) {
   // Фильтрация задач в соответствии с текущим фильтром
   const filteredTasks = tasks.filter((task) => {
-    if (filter === 'All') return true;
-    else if (filter === 'Active') return !task.completed;
-    else if (filter === 'Completed') return task.completed;
+    if (filter === "All") return true;
+    else if (filter === "Active") return !task.completed;
+    else if (filter === "Completed") return task.completed;
 
     return true;
   });
 
   return (
-    <ul className='todo-list'>
+    <ul className="todo-list">
       {/* Отображение каждой задачи из отфильтрованного списка */}
       {filteredTasks.map((task) => (
         <Task

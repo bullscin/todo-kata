@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 
 import NewTaskForm from "../new-task-form/new-task-form";
 import TaskList from "../task-list/task-list";
@@ -10,17 +10,20 @@ import "../style/common.css";
 const TodoApp = () => {
   const [tasks, setTasks] = useState([]); // Начально пустой массив задач
   const [filter, setFilter] = useState("All"); // Начальный фильтр установлен на 'Все'
-  let maxId = 1; // Инициализация переменной для идентификации задач
+  const maxIdRef = useRef(1); // Использу useRef для maxId
 
   // Метод для создания новой задачи
   const createTask = (description) => {
-    return {
-      id: maxId++, // Присваиваем уникальный идентификатор
+    const newTask = {
+      id: maxIdRef.current, // Присваиваем уникальный идентификатор
       completed: false,
       description,
       created: new Date(),
       editing: false,
     };
+
+    maxIdRef.current += 1; // Увеличиваем значение maxId
+    return newTask;
   };
 
   // Метод для добавления новой задачи в состояние
@@ -42,21 +45,19 @@ const TodoApp = () => {
           ? {
               ...task,
               editing,
-              description:
-                newDescription !== null ? newDescription : task.description, // Обновляем описание задачи при необходимости
+              description: newDescription !== null ? newDescription : task.description, // Обновляем описание задачи при необходимости
             }
-          : task,
-      ),
+          : task
+      )
     );
   };
 
   // Метод для изменения состояния выполнения задачи
   const handleTaskCompletionToggle = (id, completed) => {
-    setTasks(
-      (prevTasks) =>
-        prevTasks.map((task) =>
-          task.id === id ? { ...task, completed } : task,
-        ), // Обновляем состояние выполнения задачи
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === id ? { ...task, completed } : task
+      ) // Обновляем состояние выполнения задачи
     );
   };
 
@@ -74,6 +75,7 @@ const TodoApp = () => {
 
   return (
     <section className="todoapp">
+      {/* {console.log(maxIdRef)} */}
       {/* Компонент для добавления новой задачи */}
       <NewTaskForm onTaskAdded={addTask} />
       <section className="main">
